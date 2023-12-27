@@ -1,8 +1,16 @@
 <template>
-    <lightning-card title="MiscGetUserId" icon-name="custom:custom19">
-        <div class="slds-m-around_medium">
-          <p>User Id:</p>
-          {userId}
-        </div>
-      </lightning-card>
+  <lightning-card title="Case List">
+    <ul class="slds-m-around_medium">
+      <!-- If data is present -->
+      <template if:true={caseList.data}>
+        <template for:each={caseList.data} for:item="caseItem" for:index="index">
+          <li key={caseItem.Id}>{index}, {caseItem.Id}</li>
+        </template>
+      </template>
+      <!-- If no data -->
+      <template if:true={caseList.error}>
+        <p>No data's found</p>
+      </template>
+    </ul>
+  </lightning-card>
 </template>
