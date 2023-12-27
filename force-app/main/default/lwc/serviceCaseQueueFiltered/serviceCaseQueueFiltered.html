@@ -6,6 +6,11 @@
         <template for:each={caseList.data} for:item="caseItem" for:index="index">
           <li key={caseItem.Id}>{index}, {caseItem.Id}</li>
         </template>
+        <lightning-datatable>
+          data={caseList},
+          columns={columns},
+          keyField="Id"
+        </lightning-datatable>
       </template>
       <!-- If no data -->
       <template if:true={caseList.error}>

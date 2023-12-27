@@ -3,7 +3,7 @@ public inherited sharing class ServiceCaseQueueService {
   public static List<Case> getUserCases(String userId) {
     try {
       return [
-        SELECT Id, CaseNumber, OwnerId, Priority, CreatedDate
+        SELECT Id, CaseNumber, OwnerId, Status, Priority, Origin, CreatedDate
         FROM Case
         WHERE OwnerId = :userId
         ORDER BY OwnerId, Priority DESC, CreatedDate DESC
