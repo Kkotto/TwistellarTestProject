@@ -19,7 +19,7 @@ public inherited sharing class ServiceCaseQueueService {
 
   private static List<Case> getAllUserCases(String userId) {
     return [
-      SELECT Id, CaseNumber, OwnerId, Status, Priority, Origin, CreatedDate
+      SELECT Id, CaseNumber, Owner.Name, Status, Priority, Origin, CreatedDate
       FROM Case
       WHERE OwnerId = :userId
       ORDER BY OwnerId, Priority DESC, CreatedDate DESC
@@ -56,7 +56,7 @@ public inherited sharing class ServiceCaseQueueService {
     }
     // Restrict cases to find only queues with user assosiation
     return [
-      SELECT Id, CaseNumber, OwnerId, Status, Priority, Origin, CreatedDate
+      SELECT Id, CaseNumber, Owner.Name, Status, Priority, Origin, CreatedDate
       FROM Case
       WHERE Owner.Type = 'Queue' AND OwnerId IN :queueIdOfCase
     ];
