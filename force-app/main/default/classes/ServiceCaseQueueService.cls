@@ -7,7 +7,12 @@ public inherited sharing class ServiceCaseQueueService {
       // List for cases
       List<Case> userCases = getAllUserCases(userId);
       // List for case queues
-      List<Case> userQueues = getAllUserQueueCases(userId);
+      //List<Case> userQueues = getAllUserQueueCases(userId);
+      List<Case> userQueues = [
+        SELECT Id, CaseNumber, OwnerId, Status, Priority, Origin, CreatedDate
+        FROM Case
+        WHERE Owner.Type = 'Queue'
+      ];
       // Merge results
       allCases.addAll(userCases);
       allCases.addAll(userQueues);
