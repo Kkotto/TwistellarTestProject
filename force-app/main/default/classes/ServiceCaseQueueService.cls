@@ -1,32 +1,33 @@
 public inherited sharing class ServiceCaseQueueService {
+  private static final Integer LIMIT_VALUE = 25;
+  private static final String QUEUE_TYPE_VALUE = 'Queue';
+  private static final String CASE_TYPE_VALUE = 'Case';
+
   @AuraEnabled(cacheable=true)
   public static List<Case> getUserCases(String userId) {
     try {
-      // List for all both cases and queues
-      List<Case> allCases = new List<Case>();
-      // List for cases
-      List<Case> userCases = getAllUserCases(userId);
-      // List for case queues
-      List<Case> userQueues = getAllUserQueueCases(userId);
-      // Merge results
-      allCases.addAll(userCases);
-      allCases.addAll(userQueues);
-      return allCases;
+      // Find all owner ids of assosiated queues
+      Set<Id> userIdSet = findQueueOwnerId(userId);
+      // Don't forget to add user id itself
+      userIdSet.add(userId);
+      // Queues and cases were combined into one query due to task's limitations
+      return findAllCasesAndQueues(userIdSet);
     } catch (Exception e) {
       throw new AuraHandledException(e.getMessage());
     }
   }
 
-  private static List<Case> getAllUserCases(String userId) {
+  private static List<Case> findAllCasesAndQueues(Set<Id> userIdList) {
     return [
       SELECT Id, CaseNumber, Owner.Name, Status, Priority, Origin, CreatedDate
       FROM Case
-      WHERE OwnerId = :userId
-      ORDER BY OwnerId, Priority DESC, CreatedDate DESC
+      WHERE OwnerId IN :userIdList
+      ORDER BY Owner_Priority__c ASC, Priority_Order__c DESC, CreatedDate DESC
+      LIMIT :LIMIT_VALUE
     ];
   }
 
-  private static List<Case> getAllUserQueueCases(String userId) {
+  private static Set<Id> findQueueOwnerId(String userId) {
     // Find a group of current user (from group member by user's id)
     Set<Id> groupIdOfCurrentUser = new Set<Id>();
     for (GroupMember gm : [
@@ -41,7 +42,7 @@ public inherited sharing class ServiceCaseQueueService {
     for (Group gr : [
       SELECT Id
       FROM Group
-      WHERE Type = 'Queue' AND Id IN :groupIdOfCurrentUser
+      WHERE Type = :QUEUE_TYPE_VALUE AND Id IN :groupIdOfCurrentUser
     ]) {
       groupIdOfQueue.add(gr.Id);
     }
@@ -50,15 +51,10 @@ public inherited sharing class ServiceCaseQueueService {
     for (QueueSObject qso : [
       SELECT QueueId
       FROM QueueSObject
-      WHERE SObjectType = 'Case' AND QueueId IN :groupIdOfQueue
+      WHERE SObjectType = :CASE_TYPE_VALUE AND QueueId IN :groupIdOfQueue
     ]) {
       queueIdOfCase.add(qso.QueueId);
     }
-    // Restrict cases to find only queues with user assosiation
-    return [
-      SELECT Id, CaseNumber, Owner.Name, Status, Priority, Origin, CreatedDate
-      FROM Case
-      WHERE Owner.Type = 'Queue' AND OwnerId IN :queueIdOfCase
-    ];
+    return queueIdOfCase;
   }
 }
