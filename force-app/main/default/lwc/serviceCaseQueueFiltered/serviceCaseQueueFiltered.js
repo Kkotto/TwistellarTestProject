@@ -26,17 +26,17 @@ export default class ServiceCaseQueueFiltered extends NavigationMixin(
   wiredCaseStatusOptions;
 
   get caseStatusOptions() {
-    console.log(this.wiredCaseStatusOptions.data.values)
-    return this.wiredCaseStatusOptions.data.values.map(option => ({
-      label: option.label,
-      value: option.value
-    }));
+    if (this.wiredCaseStatusOptions.data) {
+      return this.wiredCaseStatusOptions.data.values.map(option => ({
+        label: option.label,
+        value: option.value
+      }));
+    }
+    return [];
   }
 
   openCaseRecord(event) {
     const caseId = event.currentTarget.dataset.id;
-    console.log(caseId);
-    console.log(this.wiredCaseStatusOptions.data.values);
     this[NavigationMixin.Navigate]({
       type: "standard__recordPage",
       attributes: {
