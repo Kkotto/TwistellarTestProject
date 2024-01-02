@@ -7,3 +7,5 @@
 // Sorting by picklists values: https://www.salesforceben.com/salesforce-case-scoring/
 // Navigation Mixin: https://www.sfdcpoint.com/salesforce/navigation-service-in-lwc/
 // Dataset id: https://stackoverflow.com/questions/49711130/i-used-e-currenttarget-dataset-id-to-get-the-inex-of-the-clicked-li-but-gives
+// Object Info: https://developer.salesforce.com/docs/atlas.en-us.uiapi.meta/uiapi/ui_api_responses_object_info.htm
+// Record Type Info: https://developer.salesforce.com/docs/atlas.en-us.uiapi.meta/uiapi/ui_api_responses_record_type_info.htm#ui_api_responses_record_type_info

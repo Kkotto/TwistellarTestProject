@@ -40,14 +40,25 @@
                 <div class="slds-truncate" title={index}>{index}</div>
               </th>
               <td data-label="Case Number">
-                <div class="slds-truncate" title={caseItem.CaseNumber} onclick={openCaseRecord}
-                  data-id={caseItem.Id}><a>{caseItem.CaseNumber}</a></div>
+                <div class="slds-truncate" title={caseItem.CaseNumber} onclick={openCaseRecord} data-id={caseItem.Id}>
+                  <a>{caseItem.CaseNumber}</a>
+                </div>
               </td>
               <td data-label="Assignee">
                 <div class="slds-truncate" title={caseItem.Owner.Name}>{caseItem.Owner.Name}</div>
               </td>
+              <!-- Case status div does not have slds-truncate -->
+              <!-- For correct work Case status must have if:true check -->
               <td data-label="Case Status">
-                <div class="slds-truncate" title={caseItem.CaseStatus}>{caseItem.CaseStatus}</div>
+                <div title="CaseStatus">
+                  <template if:true={caseStatusOptions}>
+                    <lightning-combobox options={caseStatusOptions}>
+                    </lightning-combobox>
+                  </template>
+                  <template if:false={caseStatusOptions}>
+                    <div class="slds-truncate" title={caseItem.Status}>{caseItem.Status}</div>
+                  </template>
+                </div>
               </td>
               <td data-label="Priority">
                 <div class="slds-truncate" title={caseItem.Priority}>{caseItem.Priority}</div>
