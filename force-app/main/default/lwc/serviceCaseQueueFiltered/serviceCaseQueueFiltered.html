@@ -40,7 +40,8 @@
                 <div class="slds-truncate" title={index}>{index}</div>
               </th>
               <td data-label="Case Number">
-                <div class="slds-truncate" title={caseItem.CaseNumber}>{caseItem.CaseNumber}</div>
+                <div class="slds-truncate" title={caseItem.CaseNumber} onclick={openCaseRecord}
+                  data-id={caseItem.Id}><a>{caseItem.CaseNumber}</a></div>
               </td>
               <td data-label="Assignee">
                 <div class="slds-truncate" title={caseItem.Owner.Name}>{caseItem.Owner.Name}</div>
