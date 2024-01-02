@@ -9,3 +9,5 @@
 // Dataset id: https://stackoverflow.com/questions/49711130/i-used-e-currenttarget-dataset-id-to-get-the-inex-of-the-clicked-li-but-gives
 // Object Info: https://developer.salesforce.com/docs/atlas.en-us.uiapi.meta/uiapi/ui_api_responses_object_info.htm
 // Record Type Info: https://developer.salesforce.com/docs/atlas.en-us.uiapi.meta/uiapi/ui_api_responses_record_type_info.htm#ui_api_responses_record_type_info
+// Update record in datatable (Refresh the Cache When Calling a Method Imperatively): https://developer.salesforce.com/docs/platform/lwc/guide/apex-result-caching.html
+// Spinner: https://developer.salesforce.com/docs/component-library/bundle/lightning-spinner/example

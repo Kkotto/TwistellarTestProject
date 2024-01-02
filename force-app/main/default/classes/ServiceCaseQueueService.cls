@@ -57,4 +57,9 @@ public inherited sharing class ServiceCaseQueueService {
     }
     return queueIdOfCase;
   }
+
+  @AuraEnabled(cacheable=true)
+  public static void updateRecord(Case updatedCase) {
+    Database.update(updatedCase);
+  }
 }
