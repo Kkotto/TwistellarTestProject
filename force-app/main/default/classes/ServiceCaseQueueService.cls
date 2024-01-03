@@ -58,8 +58,15 @@ public inherited sharing class ServiceCaseQueueService {
     return queueIdOfCase;
   }
 
-  @AuraEnabled(cacheable=true)
-  public static void updateRecord(Case updatedCase) {
-    Database.update(updatedCase);
+  @AuraEnabled
+  public static String updateCase(String caseId, String updatedStatus) {
+    try {
+      Case oldCase = [SELECT Id, Status FROM CASE WHERE Id = :caseId LIMIT 1];
+      oldCase.status = updatedStatus;
+      update oldCase;
+      return 'Success: record updated successfully';
+    } catch (Exception e) {
+        return 'The following exception has occurred: ' + e.getMessage();
+    }
   }
 }

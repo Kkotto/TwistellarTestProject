@@ -9,7 +9,7 @@ import Id from "@salesforce/user/Id";
 import CASE_OBJECT from "@salesforce/schema/Case";
 import CASE_STATUS_FIELD from "@salesforce/schema/Case.Status";
 import getUserCases from "@salesforce/apex/ServiceCaseQueueService.getUserCases";
-import updateRecord from "@salesforce/apex/ServiceCaseQueueService.updateRecord";
+import updateCase from "@salesforce/apex/ServiceCaseQueueService.updateCase";
 
 export default class ServiceCaseQueueFiltered extends NavigationMixin(
   LightningElement
@@ -18,6 +18,10 @@ export default class ServiceCaseQueueFiltered extends NavigationMixin(
   userId = Id;
   // For spinner
   isLoading = false;
+  // To save updated status
+  updatedRecords = [];
+  // To show save button only when changes were implied
+  isSaveButtonDisplayed = false;
 
   // Get all cases owned by current user
   @wire(getUserCases, { userId: "$userId" })
@@ -53,10 +57,21 @@ export default class ServiceCaseQueueFiltered extends NavigationMixin(
     });
   }
 
-  async refreshData(event) {
+  async handleStatusChange(event){
+    if(event.currentTarget.dataset.id){
+      console.log(event.currentTarget.dataset.id);
+      console.log(event.target.value);
+      const result = await updateCase({caseId: event.currentTarget.dataset.id, updatedStatus: event.target.value});
+      console.log(JSON.stringify("Apex update result: "+ result));
+    }
+  }
+
+  /*async refreshData(event) {
     this.isLoading = true;
     if (event.currentTarget.dataset.id) {
+      console.log("id is: "+event.currentTarget.dataset.id);
       //
+      console.log("Record is: "+array.find((record) => record.id === event.currentTarget.dataset.id));
       await updateRecord(
         array.find((record) => record.id === event.currentTarget.dataset.id)
       );
@@ -65,5 +80,5 @@ export default class ServiceCaseQueueFiltered extends NavigationMixin(
       ]);
     }
     this.isLoading = false;
-  }
+  }*/
 }
