@@ -1,87 +1,99 @@
 <template>
   <lightning-card title="Case List">
-    <!-- Enable spinner -->
-    <template if:true={isLoading}>
-      <lightning-spinner alternative-text="Loading..." size="xx-small"></lightning-spinner>
-    </template>
-    <template if:false={isLoading}>
+    <!-- Refesh button -->
+    <div class="refresh-container">
+      <button class="slds-button slds-button_icon slds-button_icon-border refresh-btn" title="Refresh" onclick={refreshTable}>
+        <lightning-icon icon-name="utility:refresh" size="small" alternative-text="Refresh"></lightning-icon>
+      </button>
+    </div>
+    <!-- Table start -->
+    <!-- Example: https://www.lightningdesignsystem.com/components/data-tables/ -->
+    <table class="slds-table slds-table_cell-buffer slds-table_bordered">
+      <!-- Table header start -->
+      <thead>
+        <tr class="slds-line-height_reset">
+          <th class="">
+            <div class="slds-truncate" title="Index">Index</div>
+          </th>
+          <th class="">
+            <div class="slds-truncate" title="Case Number">Case Number</div>
+          </th>
+          <th class="">
+            <div class="slds-truncate" title="Assignee">Assignee</div>
+          </th>
+          <th class="">
+            <div class="slds-truncate" title="Case Status">Case Status</div>
+          </th>
+          <th class="">
+            <div class="slds-truncate" title="Priority">Priority</div>
+          </th>
+          <th class="">
+            <div class="slds-truncate" title="Origin">Origin</div>
+          </th>
+        </tr>
+      </thead>
+      <!-- Table header end -->
       <!-- If data is present -->
       <template if:true={caseList.data}>
-        <!-- Table start-->
-        <!-- Example: https://www.lightningdesignsystem.com/components/data-tables/ -->
-        <table class="slds-table slds-table_cell-buffer slds-table_bordered">
-          <!-- Table header -->
-          <thead>
-            <tr class="slds-line-height_reset">
-              <th class="">
-                <div class="slds-truncate" title="Index">Index</div>
-              </th>
-              <th class="">
-                <div class="slds-truncate" title="Case Number">Case Number</div>
-              </th>
-              <th class="">
-                <div class="slds-truncate" title="Assignee">Assignee</div>
-              </th>
-              <th class="">
-                <div class="slds-truncate" title="Case Status">Case Status</div>
-              </th>
-              <th class="">
-                <div class="slds-truncate" title="Priority">Priority</div>
-              </th>
-              <th class="">
-                <div class="slds-truncate" title="Origin">Origin</div>
-              </th>
-            </tr>
-            <!-- Table header end -->
-          </thead>
+        <!-- If data's not updating at the moment show data -->
+        <template if:false={isLoading}>
           <!-- Table body start -->
-          <tbody>
-            <!-- Iteration by rows -->
-            <template for:each={caseList.data} for:item="caseItem" for:index="index">
-              <!-- Table row start -->
-              <!-- Every row has an unique key -->
-              <tr class="slds-hint-parent" key={caseItem.Id}>
-                <th data-label="Index" scope="row">
-                  <div class="slds-truncate" title={index}>{index}</div>
-                </th>
-                <td data-label="Case Number">
-                  <div class="slds-truncate" title={caseItem.CaseNumber} onclick={openCaseRecord} data-id={caseItem.Id}>
-                    <a>{caseItem.CaseNumber}</a>
-                  </div>
-                </td>
-                <td data-label="Assignee">
-                  <div class="slds-truncate" title={caseItem.Owner.Name}>{caseItem.Owner.Name}</div>
-                </td>
-                <!-- Case status div does not have slds-truncate -->
-                <!-- For correct work Case status must have if:true check -->
-                <td data-label="Case Status">
-                  <div title="CaseStatus">
-                    <template if:true={caseStatusOptions}>
-                      <lightning-combobox options={caseStatusOptions} value={caseItem.Status} data-id={caseItem.Id} onchange={handleStatusChange}>
-                      </lightning-combobox>
-                    </template>
-                    <template if:false={caseStatusOptions}>
-                      <div class="slds-truncate" title={caseItem.Status}>{caseItem.Status}</div>
-                    </template>
-                  </div>
-                </td>
-                <td data-label="Priority">
-                  <div class="slds-truncate" title={caseItem.Priority}>{caseItem.Priority}</div>
-                </td>
-                <td data-label="Origin">
-                  <div class="slds-truncate" title={caseItem.Origin}>{caseItem.Origin}</div>
-                </td>
-                <!-- Table row end -->
-              </tr>
-            </template>
-            <!-- Table body end -->
-          </tbody>
-        </table>
+        <tbody>
+          <!-- Iteration by rows -->
+          <template for:each={caseList.data} for:item="caseItem" for:index="index">
+            <!-- Table row start -->
+            <!-- Every row has an unique key -->
+            <tr class="slds-hint-parent" key={caseItem.Id}>
+              <th data-label="Index" scope="row">
+                <div class="slds-truncate" title={index}>{index}</div>
+              </th>
+              <td data-label="Case Number">
+                <div class="slds-truncate" title={caseItem.CaseNumber} onclick={openCaseRecord} data-id={caseItem.Id}>
+                  <a>{caseItem.CaseNumber}</a>
+                </div>
+              </td>
+              <td data-label="Assignee">
+                <div class="slds-truncate" title={caseItem.Owner.Name}>{caseItem.Owner.Name}</div>
+              </td>
+              <!-- Case status div does not have slds-truncate -->
+              <!-- For correct work Case status must have if:true check -->
+              <td data-label="Case Status">
+                <div title="CaseStatus">
+                  <template if:true={caseStatusOptions}>
+                    <lightning-combobox options={caseStatusOptions} value={caseItem.Status} data-id={caseItem.Id} onchange={handleStatusChange}>
+                    </lightning-combobox>
+                  </template>
+                  <template if:false={caseStatusOptions}>
+                    <div class="slds-truncate" title={caseItem.Status}>{caseItem.Status}</div>
+                  </template>
+                </div>
+              </td>
+              <td data-label="Priority">
+                <div class="slds-truncate" title={caseItem.Priority}>{caseItem.Priority}</div>
+              </td>
+              <td data-label="Origin">
+                <div class="slds-truncate" title={caseItem.Origin}>{caseItem.Origin}</div>
+              </td>  
+            </tr>
+            <!-- Table row end -->
+          </template>
+        </tbody>
+        <!-- Table body end -->
+        </template>
+        <!-- If data's updating at the moment enable spinner -->
+        <template if:true={isLoading}>
+          <lightning-spinner alternative-text="Loading..." size="medium"></lightning-spinner>
+        </template>
       </template>
-      <!-- If no data -->
+      <!-- If data is not present -->
+      <template if:false={caseList.data}>
+        <p>No data is found</p>
+      </template>
+      <!-- If there's an error -->
       <template if:true={caseList.error}>
-        <p>No data's found</p>
+        <p>Some error occured...</p>
       </template>
-    </template>
+    </table>
+    <!-- Table end -->
   </lightning-card>
 </template>

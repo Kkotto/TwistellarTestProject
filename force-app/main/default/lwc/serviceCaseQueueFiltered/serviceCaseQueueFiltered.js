@@ -72,21 +72,11 @@ export default class ServiceCaseQueueFiltered extends NavigationMixin(
     }
   }
 
-  /*async refreshData(event) {
+  async refreshTable(){
     this.isLoading = true;
-    if (event.currentTarget.dataset.id) {
-      console.log("id is: "+event.currentTarget.dataset.id);
-      //
-      console.log("Record is: "+array.find((record) => record.id === event.currentTarget.dataset.id));
-      await updateRecord(
-        array.find((record) => record.id === event.currentTarget.dataset.id)
-      );
-      await notifyRecordUpdateAvailable([
-        { recordId: event.currentTarget.dataset.id }
-      ]);
-    }
-    this.isLoading = false;
-  }*/
+    await refreshApex(this.caseList);
+    this.isLoading=false;
+  }
 
   showToast(title, message, variant){
     this.dispatchEvent(

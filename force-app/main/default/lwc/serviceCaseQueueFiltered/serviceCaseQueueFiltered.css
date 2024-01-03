@@ -1,0 +1,10 @@
+.refresh-container {
+    display: flex;
+    justify-content: end;
+}
+
+.refresh-btn {
+    cursor: pointer;
+    border: 0;
+    margin: 10px;
+}
