@@ -21,3 +21,5 @@
 // Spinner: https://developer.salesforce.com/docs/component-library/bundle/lightning-spinner/example
 
 // Lightning icons: https://www.lightningdesignsystem.com/icons/
+
+// Testing runAs: https://developer.salesforce.com/docs/atlas.en-us.apexcode.meta/apexcode/apex_testing_tools_runas.htm

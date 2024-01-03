@@ -4,7 +4,7 @@ public inherited sharing class ServiceCaseQueueService {
   private static final String CASE_TYPE_VALUE = 'Case';
 
   @AuraEnabled(cacheable=true)
-  public static List<Case> getUserCases(String userId) {
+  public static List<Case> getUserCases(Id userId) {
     try {
       // Find all owner ids of assosiated queues
       Set<Id> userIdSet = findQueueOwnerId(userId);
