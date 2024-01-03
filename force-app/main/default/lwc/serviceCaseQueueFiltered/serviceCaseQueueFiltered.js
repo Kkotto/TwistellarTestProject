@@ -1,11 +1,8 @@
 import { LightningElement, wire } from "lwc";
 import { NavigationMixin } from "lightning/navigation";
-import {
-  getObjectInfo,
-  getPicklistValues
-} from "lightning/uiObjectInfoApi";
+import { getObjectInfo, getPicklistValues } from "lightning/uiObjectInfoApi";
 import { refreshApex } from "@salesforce/apex";
-import { ShowToastEvent } from 'lightning/platformShowToastEvent';
+import { ShowToastEvent } from "lightning/platformShowToastEvent";
 import Id from "@salesforce/user/Id";
 import CASE_OBJECT from "@salesforce/schema/Case";
 import CASE_STATUS_FIELD from "@salesforce/schema/Case.Status";
@@ -54,36 +51,39 @@ export default class ServiceCaseQueueFiltered extends NavigationMixin(
     });
   }
 
-  async handleStatusChange(event){
-    if(event.currentTarget.dataset.id){
-      try{
+  async handleStatusChange(event) {
+    if (event.currentTarget.dataset.id) {
+      try {
         // Spinner run
         this.isLoading = true;
         // Update record
-        const result = await updateCase({caseId: event.currentTarget.dataset.id, updatedStatus: event.target.value});
+        const result = await updateCase({
+          caseId: event.currentTarget.dataset.id,
+          updatedStatus: event.target.value
+        });
         // Success notification
-        this.showToast('Success!', result, 'success');
+        this.showToast("Success!", result, "success");
         await refreshApex(this.caseList);
         // Spinner stop
-        this.isLoading=false;
-      } catch(error){
-        this.showToast('Error updating records', error.body.message, 'error');
+        this.isLoading = false;
+      } catch (error) {
+        this.showToast("Error updating records", error.body.message, "error");
       }
     }
   }
 
-  async refreshTable(){
+  async refreshTable() {
     this.isLoading = true;
     await refreshApex(this.caseList);
-    this.isLoading=false;
+    this.isLoading = false;
   }
 
-  showToast(title, message, variant){
+  showToast(title, message, variant) {
     this.dispatchEvent(
       new ShowToastEvent({
-          title: title,
-          message: message,
-          variant: variant
+        title: title,
+        message: message,
+        variant: variant
       })
     );
   }

@@ -66,7 +66,7 @@ public inherited sharing class ServiceCaseQueueService {
       update oldCase;
       return 'Success: record updated successfully';
     } catch (Exception e) {
-        return 'The following exception has occurred: ' + e.getMessage();
+      return 'The following exception has occurred: ' + e.getMessage();
     }
   }
 }
