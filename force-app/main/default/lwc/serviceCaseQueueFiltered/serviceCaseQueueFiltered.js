@@ -2,9 +2,9 @@ import { LightningElement, wire } from "lwc";
 import { NavigationMixin } from "lightning/navigation";
 import {
   getObjectInfo,
-  getPicklistValues,
-  notifyRecordUpdateAvailable
+  getPicklistValues
 } from "lightning/uiObjectInfoApi";
+import { refreshApex } from "@salesforce/apex";
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 import Id from "@salesforce/user/Id";
 import CASE_OBJECT from "@salesforce/schema/Case";
@@ -57,9 +57,14 @@ export default class ServiceCaseQueueFiltered extends NavigationMixin(
   async handleStatusChange(event){
     if(event.currentTarget.dataset.id){
       try{
+        // Spinner run
         this.isLoading = true;
+        // Update record
         const result = await updateCase({caseId: event.currentTarget.dataset.id, updatedStatus: event.target.value});
+        // Success notification
         this.showToast('Success!', result, 'success');
+        await refreshApex(this.caseList);
+        // Spinner stop
         this.isLoading=false;
       } catch(error){
         this.showToast('Error updating records', error.body.message, 'error');
