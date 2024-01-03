@@ -5,6 +5,7 @@ import {
   getPicklistValues,
   notifyRecordUpdateAvailable
 } from "lightning/uiObjectInfoApi";
+import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 import Id from "@salesforce/user/Id";
 import CASE_OBJECT from "@salesforce/schema/Case";
 import CASE_STATUS_FIELD from "@salesforce/schema/Case.Status";
@@ -18,10 +19,6 @@ export default class ServiceCaseQueueFiltered extends NavigationMixin(
   userId = Id;
   // For spinner
   isLoading = false;
-  // To save updated status
-  updatedRecords = [];
-  // To show save button only when changes were implied
-  isSaveButtonDisplayed = false;
 
   // Get all cases owned by current user
   @wire(getUserCases, { userId: "$userId" })
@@ -59,10 +56,14 @@ export default class ServiceCaseQueueFiltered extends NavigationMixin(
 
   async handleStatusChange(event){
     if(event.currentTarget.dataset.id){
-      console.log(event.currentTarget.dataset.id);
-      console.log(event.target.value);
-      const result = await updateCase({caseId: event.currentTarget.dataset.id, updatedStatus: event.target.value});
-      console.log(JSON.stringify("Apex update result: "+ result));
+      try{
+        this.isLoading = true;
+        const result = await updateCase({caseId: event.currentTarget.dataset.id, updatedStatus: event.target.value});
+        this.showToast('Success!', result, 'success');
+        this.isLoading=false;
+      } catch(error){
+        this.showToast('Error updating records', error.body.message, 'error');
+      }
     }
   }
 
@@ -81,4 +82,14 @@ export default class ServiceCaseQueueFiltered extends NavigationMixin(
     }
     this.isLoading = false;
   }*/
+
+  showToast(title, message, variant){
+    this.dispatchEvent(
+      new ShowToastEvent({
+          title: title,
+          message: message,
+          variant: variant
+      })
+    );
+  }
 }
