@@ -1,18 +1,14 @@
 public inherited sharing class ServiceCaseQueueService {
   private static final Integer LIMIT_VALUE = 25;
   private static final String QUEUE_TYPE_VALUE = 'Queue';
-  private static final String CASE_TYPE_VALUE = 'Case';
   private static final String UPDATED_RECORD_SUCCESS_RESPONSE = 'Record updated successfully';
   private static final String UPDATED_RECORD_FAILURE_RESPONSE = 'The following exception has occurred: ';
 
   @AuraEnabled(cacheable=true)
   public static List<Case> getUserCases(Id userId) {
     try {
-      // Find all owner ids of assosiated queues
       Set<Id> userIdSet = findQueueOwnerId(userId);
-      // Don't forget to add user id itself
       userIdSet.add(userId);
-      // Queues and cases were combined into one query due to task's limitations
       return findAllCasesAndQueues(userIdSet);
     } catch (Exception e) {
       throw new AuraHandledException(e.getMessage());
@@ -30,34 +26,17 @@ public inherited sharing class ServiceCaseQueueService {
   }
 
   private static Set<Id> findQueueOwnerId(String userId) {
-    // Find a group of current user (from group member by user's id)
-    Set<Id> groupIdOfCurrentUser = new Set<Id>();
-    for (GroupMember gm : [
-      SELECT GroupId
-      FROM GroupMember
-      WHERE UserOrGroupId = :userId
-    ]) {
-      groupIdOfCurrentUser.add(gm.GroupId);
+    List<GroupMember> groupMembers = [SELECT GroupId FROM GroupMember WHERE UserOrGroupId = :userId];
+    Set<Id> groupIds = new Set<Id>();
+    for (GroupMember member : groupMembers) {
+        groupIds.add(member.GroupId);
     }
-    // Restrict a group to be a queue only
-    Set<Id> groupIdOfQueue = new Set<Id>();
-    for (Group gr : [
-      SELECT Id
-      FROM Group
-      WHERE Type = :QUEUE_TYPE_VALUE AND Id IN :groupIdOfCurrentUser
-    ]) {
-      groupIdOfQueue.add(gr.Id);
+    List<Group> queues = [SELECT Id, Name FROM Group WHERE Type = :QUEUE_TYPE_VALUE AND Id IN :groupIds];
+    Set<Id> queueIds = new Set<Id>();
+    for (Group queue : queues) {
+        queueIds.add(queue.Id);
     }
-    // Restrict queues to find only case type
-    Set<Id> queueIdOfCase = new Set<Id>();
-    for (QueueSObject qso : [
-      SELECT QueueId
-      FROM QueueSObject
-      WHERE SObjectType = :CASE_TYPE_VALUE AND QueueId IN :groupIdOfQueue
-    ]) {
-      queueIdOfCase.add(qso.QueueId);
-    }
-    return queueIdOfCase;
+    return queueIds;
   }
 
   @AuraEnabled
