@@ -2,6 +2,8 @@ public inherited sharing class ServiceCaseQueueService {
   private static final Integer LIMIT_VALUE = 25;
   private static final String QUEUE_TYPE_VALUE = 'Queue';
   private static final String CASE_TYPE_VALUE = 'Case';
+  private static final String UPDATED_RECORD_SUCCESS_RESPONSE = 'Record updated successfully';
+  private static final String UPDATED_RECORD_FAILURE_RESPONSE = 'The following exception has occurred: ';
 
   @AuraEnabled(cacheable=true)
   public static List<Case> getUserCases(Id userId) {
@@ -64,9 +66,9 @@ public inherited sharing class ServiceCaseQueueService {
       Case oldCase = [SELECT Id, Status FROM CASE WHERE Id = :caseId LIMIT 1];
       oldCase.status = updatedStatus;
       update oldCase;
-      return 'Success: record updated successfully';
+      return UPDATED_RECORD_SUCCESS_RESPONSE;
     } catch (Exception e) {
-      return 'The following exception has occurred: ' + e.getMessage();
+      return UPDATED_RECORD_FAILURE_RESPONSE + e.getMessage();
     }
   }
 }
