@@ -1,5 +1,12 @@
 public without sharing class AccountCasesPdfCtrl {
-    public static void getAccountCasesPrevWeek(){
-        
+    List<Case> accountCasesPrevWeek;
+
+    public List<Case> getAccountCasesPrevWeek(){
+        return [
+            SELECT Account.Name, Account.Owner.Name, CaseNumber, Status, Priority, Origin
+            FROM Case
+            WHERE CreatedDate = LAST_WEEK
+            ORDER BY Account.Name ASC
+        ];
     }
 }

@@ -23,3 +23,5 @@
 // Lightning icons: https://www.lightningdesignsystem.com/icons/
 
 // Testing runAs: https://developer.salesforce.com/docs/atlas.en-us.apexcode.meta/apexcode/apex_testing_tools_runas.htm
+
+// Date Formats and Date Literals in WHERE: https://developer.salesforce.com/docs/atlas.en-us.soql_sosl.meta/soql_sosl/sforce_api_calls_soql_select_dateformats.htm
